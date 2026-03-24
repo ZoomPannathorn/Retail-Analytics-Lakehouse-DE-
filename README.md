@@ -66,7 +66,8 @@ The orchestration layer is built with Apache Airflow. The DAG executes the full 
 
 Add your Airflow success screenshot at `assets/airflow-dag-success.png` and it will render automatically below.
 
-![Airflow DAG Success](assets/airflow-dag-success.png)
+![Airflow DAG Success](<img width="1907" height="402" alt="image" src="https://github.com/user-attachments/assets/d82a267d-9946-4dbe-8be1-0794a386abee" />
+)
 
 ## Medallion Layers
 
