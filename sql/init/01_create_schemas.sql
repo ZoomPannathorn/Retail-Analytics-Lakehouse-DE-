@@ -1,0 +1,5 @@
+\connect ecommerce_analytics;
+
+CREATE SCHEMA IF NOT EXISTS raw;
+CREATE SCHEMA IF NOT EXISTS silver;
+CREATE SCHEMA IF NOT EXISTS analytics;

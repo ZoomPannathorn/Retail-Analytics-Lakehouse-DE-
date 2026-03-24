@@ -1,0 +1,114 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: de_postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d
+
+  minio:
+    image: minio/minio:latest
+    container_name: de_minio
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+  airflow-init:
+    build:
+      context: .
+      dockerfile: infra/airflow/Dockerfile
+    container_name: airflow_init
+    env_file:
+      - .env
+    environment: &airflow-env
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__WEBSERVER__SECRET_KEY: local-secret
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PYTHONPATH: /opt/airflow
+    user: "${AIRFLOW_UID:-50000}:0"
+    depends_on:
+      - postgres
+    command: bash -c "airflow db migrate && airflow users create --username admin --password admin --firstname Data --lastname Engineer --role Admin --email admin@example.com || true"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./data:/opt/airflow/data
+
+  airflow-webserver:
+    build:
+      context: .
+      dockerfile: infra/airflow/Dockerfile
+    container_name: airflow_webserver
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      <<: *airflow-env
+    depends_on:
+      - airflow-init
+    command: airflow webserver
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./data:/opt/airflow/data
+
+  airflow-scheduler:
+    build:
+      context: .
+      dockerfile: infra/airflow/Dockerfile
+    container_name: airflow_scheduler
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      <<: *airflow-env
+    depends_on:
+      - airflow-init
+    command: airflow scheduler
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./data:/opt/airflow/data
+
+  spark-master:
+    build:
+      context: .
+      dockerfile: infra/spark/Dockerfile
+    container_name: de_spark_master
+    profiles: ["spark"]
+    restart: unless-stopped
+    environment:
+      SPARK_MODE: master
+    ports:
+      - "7077:7077"
+      - "8081:8080"
+
+volumes:
+  postgres_data:
+  minio_data:

@@ -1,0 +1,21 @@
+name: retail_analytics_lakehouse
+version: 1.0.0
+config-version: 2
+
+profile: retail_analytics_lakehouse
+
+model-paths: ["models"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  retail_analytics_lakehouse:
+    staging:
+      +materialized: view
+      +schema: analytics
+    marts:
+      +materialized: table
+      +schema: analytics
+
