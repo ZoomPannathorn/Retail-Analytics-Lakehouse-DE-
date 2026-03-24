@@ -119,14 +119,6 @@ Add your Airflow success screenshot at `assets/airflow-dag-success.png` and it w
 \-- tests/                      # Unit tests
 ```
 
-## Key Engineering Highlights
-
-- End-to-end batch pipeline covering ingestion, transformation, validation, loading, and orchestration
-- Separation of concerns across `raw`, `silver`, and `analytics` layers
-- Warehouse loading into PostgreSQL with repeatable schema creation
-- Local reproducibility through Docker Compose
-- Resume-friendly business outputs such as monthly revenue, category performance, and customer lifetime value
-
 ## Tools Used and Why
 
 ### Python
@@ -195,23 +187,6 @@ Examples of analytics outputs:
 - category performance
 - average order value
 
-## Resume Value
-
-This project is a good resume project because it shows:
-
-- orchestration with Airflow
-- warehouse loading with PostgreSQL
-- data modeling with dbt
-- data quality validation
-- local platform setup with Docker
-- business-focused analytics design
-
-Example resume bullets are available in [docs/resume-guide.md](C:/Users/ADMIN/Documents/New%20project/docs/resume-guide.md).
-
-## Documentation
-
-- [Architecture Notes](C:/Users/ADMIN/Documents/New%20project/docs/architecture.md)
-- [Resume Guide](C:/Users/ADMIN/Documents/New%20project/docs/resume-guide.md)
 
 ## Future Improvements
 
