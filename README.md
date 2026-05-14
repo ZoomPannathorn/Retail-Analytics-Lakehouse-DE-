@@ -69,6 +69,7 @@ Add your Airflow success screenshot at `assets/airflow-dag-success.png` and it w
 ![Airflow DAG Success](<img width="1907" height="402" alt="image" src="https://github.com/user-attachments/assets/d82a267d-9946-4dbe-8be1-0794a386abee" />
 )
 <img width="1907" height="402" alt="image" src="https://github.com/user-attachments/assets/bd976ae6-0023-4098-858d-3b2c053a5a7c" />
+<img width="1892" height="865" alt="image" src="https://github.com/user-attachments/assets/b2acfc97-7786-41c1-bd4a-ee6081491089" />
 
 ## Medallion Layers
 
